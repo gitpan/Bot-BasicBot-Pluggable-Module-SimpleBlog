@@ -1,0 +1,4 @@
+MANIFEST
+Makefile.PL
+lib/Bot/BasicBot/Pluggable/Module/SimpleBlog/Store/SQLite.pm
+lib/Bot/BasicBot/Pluggable/Module/SimpleBlog.pm
