@@ -2,7 +2,7 @@ package Bot::BasicBot::Pluggable::Module::SimpleBlog;
 
 use strict;
 use vars qw( $VERSION );
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 use base qw(Bot::BasicBot::Pluggable::Module::Base);
 
@@ -39,6 +39,14 @@ A plugin module for L<Bot::BasicBot::Pluggable> to grab, store and
 output URLs from IRC channels. It is intentionally simplistic - see
 L<Bot::BasicBot::Pluggable::Module::Blog> for a more complicated
 chump-like thing.
+
+=head1 IMPORTANT NOTE WHEN UPGRADING FROM PRE-0.02 VERSIONS
+
+I'd made a thinko in version 0.01 in one of the column names in the
+table used to store the URLs in the database, so you'll have to delete
+your store file and start again. It didn't seem worth automatically
+detecting and fixing this since I only released 0.01 yesterday and I
+don't expect anyone to have installed it yet.
 
 =head1 METHODS
 
@@ -128,12 +136,12 @@ sub set_blogurl {
   use warnings;
   use Bot::BasicBot::Pluggable;
 
-  my $bot = Bot::BasicBot::Pluggable->new( channels => [ "#test" ],
-                                           server   => "irc.example.com",
-                                           port     => "6667",
-                                           nick     => "bot",
-                                           username => "bot",
-                                           name     => "bot",
+  my $bot = Bot::BasicBot::Pluggable->new(channels => [ "#test" ],
+                                          server   => "irc.example.com",
+                                          port     => "6667",
+                                          nick     => "bot",
+                                          username => "bot",
+                                          name     => "bot",
                                          );
   $bot->load( "SimpleBlog" );
 
@@ -184,15 +192,15 @@ Get stuff out of the database in your favoured fashion, for example:
 
   EOF
 
-  my $sql = "SELECT timestamp, name, chan, url, comment FROM blogged
+  my $sql = "SELECT timestamp, name, channel, url, comment FROM blogged
              ORDER BY timestamp DESC";
   my $sth = $dbh->prepare($sql) or die $dbh->errstr;
   $sth->execute;
-  my ($timestamp, $name, $chan, $url, $comment);
+  my ($timestamp, $name, $channel, $url, $comment);
 
-  while ( ($timestamp, $name, $chan, $url, $comment)
+  while ( ($timestamp, $name, $channel, $url, $comment)
                                           = $sth->fetchrow_array ) {
-      print "<br><i>$timestamp</i>: <b>$name/$chan</b>: ";
+      print "<br><i>$timestamp</i>: <b>$name/$channel</b>: ";
       print "<a href=\"$url\">$url</a> " if $url;
       print $q->escapeHTML($comment) if $comment;
   }
@@ -214,7 +222,7 @@ hence so is this.
 
 =head1 BUGS
 
-There are no tests!
+More tests would be nice.
 
 =head1 SEE ALSO
 

@@ -7,6 +7,9 @@ WriteMakefile(
 		      Carp                     => 0,
                       DBD::SQLite              => 0,
                       Regexp::Common           => 0,
-                      Time::Piece              => 0 }
+		      Test::DatabaseRow        => 0,
+		      Test::More               => 0,
+                      Time::Piece              => 0 },
+    clean        => { FILES => "t/brane.db" }
 );
 

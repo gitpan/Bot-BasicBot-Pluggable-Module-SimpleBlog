@@ -2,7 +2,7 @@ package Bot::BasicBot::Pluggable::Module::SimpleBlog::Store::SQLite;
 
 use strict;
 use vars qw( $VERSION );
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 use base qw(Bot::BasicBot::Pluggable::Module::Base);
 
@@ -25,6 +25,14 @@ Bot::BasicBot::Pluggable::Module::SimpleBlog::Store::SQLite - SQLite storage for
 
 Store URLs in a sqlite database for
 L<Bot::BasicBot::Pluggable::Module::SimpleBot>.
+
+=head1 IMPORTANT NOTE WHEN UPGRADING FROM PRE-0.02 VERSIONS
+
+I'd made a thinko in version 0.01 in one of the column names in the
+table used to store the URLs in the database, so you'll have to delete
+your store file and start again. It didn't seem worth automatically
+detecting and fixing this since I only released 0.01 yesterday and I
+don't expect anyone to have installed it yet.
 
 =head1 METHODS
 
@@ -58,6 +66,19 @@ sub new {
     return $self;
 }
 
+=item B<dbh>
+
+  my $dbh = $store->dbh;
+
+Returns the store's database handle.
+
+=cut
+
+sub dbh {
+    my $self = shift;
+    return $self->{dbh};
+}
+
 sub ensure_db_schema_correct {
     my $self = shift;
     my $dbh  = $self->{dbh};
@@ -71,7 +92,7 @@ sub ensure_db_schema_correct {
     return 1 if $ok;
 
     $dbh->do("CREATE TABLE blogged
-            ( timestamp text, name text, chan text, url text, comment text )" )
+         ( timestamp text, name text, channel text, url text, comment text )" )
       or croak "ERROR: " . $dbh->errstr;
     return 1;
 }
@@ -93,7 +114,7 @@ sub store {
     my $dbh = $self->{dbh};
 
     my $sth = $dbh->prepare( qq{
-        INSERT INTO blogged (timestamp, name, chan, url, comment)
+        INSERT INTO blogged (timestamp, name, channel, url, comment)
                VALUES (?, ?, ?, ?, ?)
     }) or return "Error: can't insert into database: " . $dbh->errstr;
 
@@ -105,7 +126,7 @@ sub store {
 
 =head1 BUGS
 
-No tests.
+No retrieval methods yet.
 
 =head1 SEE ALSO
 
